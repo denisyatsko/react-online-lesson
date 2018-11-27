@@ -25,11 +25,9 @@ export default class Feed extends Component {
 			return <Post key = { post.id } { ...post } />;
 		});
 
-		const spinner = <Spinner spinning = { spinning }  />;
-
 		return (
 			<section className = { Styles.feed }>
-				{spinner}
+				<Spinner spinning = { spinning } />
 				<StatusBar />
                 <Composer />
                 {postsJSX}
