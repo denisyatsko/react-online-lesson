@@ -97,14 +97,12 @@ export default class Feed extends Component {
 	async _removePost (id) {
 		this._setPostSpinningState(true);
 
-		const removingPost = this.state.posts.filter(post => post.id != id);
-
 		await delay();
 
-		this.setState({
-			posts: removingPost,
+		this.setState(({ posts }) => ({
+			posts: posts.filter(post => post.id != id),
 			spinning: false
-		});
+		}));
 	}
 
 	render() {
