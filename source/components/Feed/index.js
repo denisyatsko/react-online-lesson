@@ -6,22 +6,15 @@ import moment from 'moment';
 import Composer from 'components/Composer';
 import Post from 'components/Post';
 import StatusBar from 'components/StatusBar';
-import Spinner from 'components/Spinner'
+import Spinner from 'components/Spinner';
+import { withProfile } from 'components/HOC/withProfile';
 
 // Instruments
 import Styles from './styles.m.css';
 import { getUniqueID, delay } from 'instruments';
 
+@withProfile
 export default class Feed extends Component {
-	constructor () {
-		super();
-
-		this._createPost = this._createPost.bind(this);
-		this._setPostSpinningState = this._setPostSpinningState.bind(this);
-		this._likePost = this._likePost.bind(this);
-		this._removePost = this._removePost.bind(this);
-	}
-
 	state = {
 		posts: [
 			{ 
@@ -40,13 +33,13 @@ export default class Feed extends Component {
 		spinning: false,
 	}
 
-	_setPostSpinningState (state) {
+	_setPostSpinningState = (state) => {
 		this.setState({
 			spinning: state,
 		});
 	}
 
-	async _createPost (comment) {
+	_createPost = async (comment) => {
 		const post = {
 			id: getUniqueID(),
 			created: moment(),
@@ -64,7 +57,7 @@ export default class Feed extends Component {
 		}));
 	}
 
-	async _likePost (id) {
+	_likePost = async (id) => {
 		const { currentUserFirstName, currentUserLastName } = this.props;
 
 		this._setPostSpinningState(true);
@@ -94,7 +87,7 @@ export default class Feed extends Component {
 		});
 	}
 
-	async _removePost (id) {
+	_removePost = async (id) => {
 		this._setPostSpinningState(true);
 
 		await delay();
