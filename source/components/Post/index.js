@@ -56,7 +56,7 @@ export default class Post extends Component {
                 <img src = { avatar } />
                 <a>{` ${ firstName } ${ lastName } `}</a>
                 <time>
-                    { moment(created).format('MMMM D h:mm:ss') }
+                    { moment.unix(created).format('MMMM D h:mm:ss a') }
                 </time>
                 <p>{ comment }</p>
                 <Like _likePost = { _likePost } id = { id } likes = { likes } />
