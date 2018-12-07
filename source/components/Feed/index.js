@@ -1,5 +1,7 @@
 // Core
 import React, { Component } from 'react';
+import { Transition } from 'react-transition-group';
+import { fromTo } from 'gsap';
 
 // Components
 import Composer from 'components/Composer';
@@ -8,6 +10,7 @@ import StatusBar from 'components/StatusBar';
 import Spinner from 'components/Spinner';
 import { withProfile } from 'components/HOC/withProfile';
 import Catcher from 'components/Catcher';
+import Postman from 'components/Postman';
 
 // Instruments
 import Styles from './styles.m.css';
@@ -17,159 +20,175 @@ import { socket } from 'socket/init';
 
 @withProfile
 export default class Feed extends Component {
-	state = {
-		posts: [],
-		spinning: false,
-	}
+    state = {
+        posts: [],
+        spinning: false,
+    }
 
-	componentDidMount () {
-		const { currentUserFirstName, currentUserLastName } = this.props;
+    componentDidMount () {
+        const { currentUserFirstName, currentUserLastName } = this.props;
 
-		this._fetchPosts();
+        this._fetchPosts();
 
-		socket.emit('join', GROUP_ID);
+        socket.emit('join', GROUP_ID);
 
-		socket.on('create', (postJSON) => {
-			const { data: createdPost, meta } = JSON.parse(postJSON);
+        socket.on('create', (postJSON) => {
+            const { data: createdPost, meta } = JSON.parse(postJSON);
 
-			if (
-				`${currentUserFirstName} ${currentUserLastName}` !==
-				`${meta.authorFirstName} ${meta.authorLastName}`
-			) {
-				this.setState(({ posts }) => ({
-					posts: [createdPost, ...posts],
-				}));
-			}
-		});
-		
-		socket.on('remove', (postJSON) => {
-			const { data: removedPost, meta } = JSON.parse(postJSON);
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ posts }) => ({
+                    posts: [createdPost, ...posts],
+                }));
+            }
+        });
+        
+        socket.on('remove', (postJSON) => {
+            const { data: removedPost, meta } = JSON.parse(postJSON);
 
-			if (
-				`${currentUserFirstName} ${currentUserLastName}` !==
-				`${meta.authorFirstName} ${meta.authorLastName}`
-			) {
-				this.setState(({ posts }) => ({
-					posts: posts.filter(post => post.id !== removedPost.id),
-				}));
-			}
-		});
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ posts }) => ({
+                    posts: posts.filter(post => post.id !== removedPost.id),
+                }));
+            }
+        });
 
-		socket.on('like', (postJSON) => {
-			const { data: likedPost, meta } = JSON.parse(postJSON);
-			
-			if (
-				`${currentUserFirstName} ${currentUserLastName}` !==
-				`${meta.authorFirstName} ${meta.authorLastName}`
-			) {
-				this.setState(({ posts }) => ({
-					posts: posts.map((post) => post.id === likedPost.id ? likedPost : post),
-				}));
-			}
-		})
-	}
+        socket.on('like', (postJSON) => {
+            const { data: likedPost, meta } = JSON.parse(postJSON);
+            
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ posts }) => ({
+                    posts: posts.map((post) => post.id === likedPost.id ? likedPost : post),
+                }));
+            }
+        })
+    }
 
-	componentWillunmoun () {
-		socket.removeListener('create');
-		socket.removeListener('remove');
-		socket.removeListener('like');
-	}
+    componentWillunmoun () {
+        socket.removeListener('create');
+        socket.removeListener('remove');
+        socket.removeListener('like');
+    }
 
-	_setPostSpinningState = (state) => {
-		this.setState({
-			spinning: state,
-		});
-	}
+    _setPostSpinningState = (state) => {
+        this.setState({
+            spinning: state,
+        });
+    }
 
-	_fetchPosts = async () => {
-		this._setPostSpinningState(true);
+    _fetchPosts = async () => {
+        this._setPostSpinningState(true);
 
-		const response = await fetch(api, {
-			method: 'GET',
-		});
+        const response = await fetch(api, {
+            method: 'GET',
+        });
 
-		const { data: posts } = await response.json();
+        const { data: posts } = await response.json();
 
-		this.setState({
-			posts,
-			spinning: false
-		});
-	}
+        this.setState({
+            posts,
+            spinning: false
+        });
+    }
 
-	_createPost = async (comment) => {
-		this._setPostSpinningState(true);
+    _createPost = async (comment) => {
+        this._setPostSpinningState(true);
 
-		const response = await fetch(api, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: TOKEN,
-			},
-			body: JSON.stringify({ comment }),
-		});
+        const response = await fetch(api, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: TOKEN,
+            },
+            body: JSON.stringify({ comment }),
+        });
 
-		const { data: post } = await response.json();
+        const { data: post } = await response.json();
 
-		this.setState(({ posts }) => ({
-			posts: [post, ...posts],
-			spinning: false
-		}));
-	}
+        this.setState(({ posts }) => ({
+            posts: [post, ...posts],
+            spinning: false
+        }));
+    }
 
-	_likePost = async (id) => {
-		this._setPostSpinningState(true);
+    _likePost = async (id) => {
+        this._setPostSpinningState(true);
 
-		const response = await fetch(`${api}/${id}`, {
-			method: 'PUT',
-			headers: {
-				Authorization: TOKEN,
-			},
-		});
+        const response = await fetch(`${api}/${id}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: TOKEN,
+            },
+        });
 
-		const { data: likedPost } = await response.json();
+        const { data: likedPost } = await response.json();
 
-		this.setState(({ posts }) => ({
-			posts: posts.map(
-				(post) => post.id === likedPost.id ? likedPost : post,
-			),
-			spinning: false
-		}));
-	}
+        this.setState(({ posts }) => ({
+            posts: posts.map(
+                (post) => post.id === likedPost.id ? likedPost : post,
+            ),
+            spinning: false
+        }));
+    }
 
-	_removePost = async (id) => {
-		this._setPostSpinningState(true);
+    _removePost = async (id) => {
+        this._setPostSpinningState(true);
 
-		const response = await fetch(`${api}/${id}`, {
-			method: 'DELETE',
-			headers: {
-				Authorization: TOKEN,
-			},
-		});
+        const response = await fetch(`${api}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: TOKEN,
+            },
+        });
 
-		this.setState(({ posts }) => ({
-			posts: posts.filter(post => post.id != id),
-			spinning: false
-		}));
-	}
+        this.setState(({ posts }) => ({
+            posts: posts.filter(post => post.id != id),
+            spinning: false
+        }));
+    }
 
-	render() {
-		const { posts, spinning } = this.state;
+    _animateComposerEnter = (composer) => {
+        fromTo(
+            composer, 
+            1, 
+            { opacity: 0, rotationX: 50 },
+            { opacity: 1, rotationX: 0 }
+        );
+    }
 
-		const postsJSX = posts.map((post) => {
-			return (
-				<Catcher key = { post.id }>
-					<Post { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />
-				</Catcher>
-			);
-		});
+    render() {
+        const { posts, spinning } = this.state;
+
+        const postsJSX = posts.map((post) => {
+            return (
+                <Catcher key = { post.id }>
+                    <Post { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />
+                </Catcher>
+            );
+        });
        
-		return (
-			<section className = { Styles.feed }>
-				<Spinner spinning = { spinning } />
-				<StatusBar />
-                <Composer _createPost = { this._createPost } />
+        return (
+            <section className = { Styles.feed }>
+                <Spinner spinning = { spinning } />
+                <StatusBar />
+                <Transition
+                    appear
+                    in 
+                    timeout = { 1000 }
+                    onEnter = { this._animateComposerEnter }>
+                    <Composer _createPost = { this._createPost } />
+                </Transition>
                 {postsJSX}
+                <Postman />
             </section>
-		);
-	}
+        );
+    }
 }

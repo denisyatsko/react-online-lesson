@@ -51,11 +51,11 @@ class Composer extends Component {
         }
     }
 
-	render() {
+    render() {
         const { comment } = this.state;
         const { avatar, currentUserFirstName } = this.props;
 
-		return (
+        return (
             <section className = { Styles.composer }>
                 <img src = { avatar } />
                 <form onSubmit = { this._handleFormSubmit }>
@@ -68,8 +68,8 @@ class Composer extends Component {
                     <input type = 'submit' value = 'Post' />
                 </form>
             </section>   
-		);
-	}
+        );
+    }
 }
 
 export default withProfile(Composer);
