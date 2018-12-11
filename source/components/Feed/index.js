@@ -164,6 +164,24 @@ export default class Feed extends Component {
         );
     }
 
+    _animatePostmanEnter = (postman) => {
+        fromTo(
+            postman,
+            1,
+            {x: 300},
+            {x: 0}
+        ); 
+    }
+
+    _animatePostmanExit = (postman) => {
+        fromTo(
+            postman,
+            2,
+            {x: 0},
+            {x: 600}
+        ); 
+    }
+
     render() {
         const { posts, spinning } = this.state;
 
@@ -187,7 +205,14 @@ export default class Feed extends Component {
                     <Composer _createPost = { this._createPost } />
                 </Transition>
                 {postsJSX}
-                <Postman />
+                <Transition
+                    appear
+                    in 
+                    timeout = { 3000 }
+                    onEnter = { this._animatePostmanEnter } 
+                    onEntered = { this._animatePostmanExit }>
+                    <Postman />
+                </Transition>
             </section>
         );
     }
