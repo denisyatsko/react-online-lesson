@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import { Transition } from 'react-transition-group';
+import { Transition, CSSTransition, TransitionGroup } from 'react-transition-group';
 import { fromTo } from 'gsap';
 
 // Components
@@ -11,6 +11,7 @@ import Spinner from 'components/Spinner';
 import { withProfile } from 'components/HOC/withProfile';
 import Catcher from 'components/Catcher';
 import Postman from 'components/Postman';
+import Counter from 'components/Counter';
 
 // Instruments
 import Styles from './styles.m.css';
@@ -187,9 +188,22 @@ export default class Feed extends Component {
 
         const postsJSX = posts.map((post) => {
             return (
-                <Catcher key = { post.id }>
-                    <Post { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />
-                </Catcher>
+                <CSSTransition
+                    key = { post.id }
+                    classNames = {{
+                        enter:       Styles.postInStart,
+                        enterActive: Styles.postInEnd,
+                        exit:        Styles.postOutStart,
+                        exitActive:  Styles.postOutEnd,
+                    }}
+                    timeout = {{
+                        enter: 500,
+                        exit:  400,
+                    }}>
+                    <Catcher>
+                        <Post { ...post } _likePost = { this._likePost } _removePost = { this._removePost } />
+                    </Catcher>
+                </CSSTransition>
             );
         });
        
@@ -204,7 +218,8 @@ export default class Feed extends Component {
                     onEnter = { this._animateComposerEnter }>
                     <Composer _createPost = { this._createPost } />
                 </Transition>
-                {postsJSX}
+                <Counter count = { postsJSX.length } />
+                <TransitionGroup>{postsJSX}</TransitionGroup>
                 <Transition
                     appear
                     in 

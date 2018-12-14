@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`instruments: delay function should return an addition of two arguments passed 1`] = `9`;
+
+exports[`instruments: getFullApiUrl function should return arguments passed should be a string 1`] = `"api/ID"`;
