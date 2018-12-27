@@ -1,0 +1,35 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--paletteColor3);
+
+    & h1 {
+        color: var(--paletteColor8);
+        font-size: 38px;
+        margin-bottom: 20px;
+    }
+
+    & button {
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #fff;
+        width: 150px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background-color: #4267b2;
+        border-color: #29487d;
+        border-radius: 2px;
+        cursor: pointer;
+        padding: 0;
+        transition: all ease-in-out 0.2s;
+
+        &:hover {
+            background-color: #365899;
+        };
+    }
+
+}

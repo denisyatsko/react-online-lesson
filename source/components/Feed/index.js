@@ -6,7 +6,6 @@ import { fromTo } from 'gsap';
 // Components
 import Composer from 'components/Composer';
 import Post from 'components/Post';
-import StatusBar from 'components/StatusBar';
 import Spinner from 'components/Spinner';
 import { withProfile } from 'components/HOC/withProfile';
 import Catcher from 'components/Catcher';
@@ -73,7 +72,7 @@ export default class Feed extends Component {
         })
     }
 
-    componentWillunmoun () {
+    componentWillUnmoun () {
         socket.removeListener('create');
         socket.removeListener('remove');
         socket.removeListener('like');
@@ -210,7 +209,6 @@ export default class Feed extends Component {
         return (
             <section className = { Styles.feed }>
                 <Spinner spinning = { spinning } />
-                <StatusBar />
                 <Transition
                     appear
                     in 

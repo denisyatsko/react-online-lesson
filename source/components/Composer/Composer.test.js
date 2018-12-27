@@ -19,7 +19,7 @@ const updatedState = {
 
 const result = mount(<Composer { ...props } />);
 
-const _submitCommentSpy = jest.spyOn(result.instance(), '_submitComment');
+const _submitCommentSpy    = jest.spyOn(result.instance(), '_submitComment');
 const _handleFormSubmitSpy = jest.spyOn(result.instance(), '_handleFormSubmit');
 
 describe('Composer component:', () => {

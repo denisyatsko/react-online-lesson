@@ -11,13 +11,13 @@ import Styles from './styles.m.css';
 export class Composer extends Component {
     static propTypes = {
         _createPost:          func.isRequired,
-        avater:               string.isRequired,
+        avatar:               string.isRequired,
         currentUserFirstName: string.isRequired
     }
 
     state = {
         comment: '',
-    }
+    } 
 
     _updateComment = (e) => {
         this.setState({

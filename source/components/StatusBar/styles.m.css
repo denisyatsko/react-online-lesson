@@ -8,8 +8,8 @@
     height: 42px;
     border-bottom: #29487d;
     background-color: #4267b2;
-    margin-bottom: 20px;
 
+    & a,
     & button {
         display: flex;
         align-items: center;
@@ -24,6 +24,10 @@
         cursor: pointer;
         border-radius: 4px;
         outline: none;
+        text-decoration: none;
+        border: 1px solid var(--paletteColor2);
+        min-height: 30px;
+        min-width: 140px;
 
         & img {
             width: 24px;
@@ -36,6 +40,10 @@
         &:hover {
             background: rgba(0, 0, 0, 0.1);
         }
+    }
+
+    & .menu {
+        display: flex;
     }
 
     & .status {

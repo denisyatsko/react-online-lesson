@@ -3,15 +3,17 @@ import React, { Component } from 'react';
 import cx from 'classnames';
 import { Transition } from 'react-transition-group';
 import { fromTo } from 'gsap';
+import { Link, withRouter } from 'react-router-dom';
 
 // Components
-import { Consumer, withProfile } from 'components/HOC/withProfile';
+import { Provider, withProfile } from 'components/HOC/withProfile';
 
 // Instruments
 import Styles from './styles.m.css';
 import { socket } from 'socket/init';
 
 @withProfile
+@withRouter
 export default class StatusBar extends Component {
     state = {
         online: false
@@ -40,8 +42,14 @@ export default class StatusBar extends Component {
         fromTo(statusBar, 1, { opacity: 0 }, { opacity: 1 })
     }
 
+    _logoutBtn = () => {
+        this.props.history.push('/login');
+
+        this.props._setloginState(false);
+    }
+
     render() {
-        const { avatar, currentUserFirstName, currentUserLastName } = this.props;
+        const { avatar, currentUserFirstName, currentUserLastName, isLoggedIn } = this.props;
         const { online } = this.state;
 
         const statusStyle = cx(Styles.status, {
@@ -50,7 +58,7 @@ export default class StatusBar extends Component {
         });
 
         const statusMessage = online ? 'Online' : 'Offline';
-
+        
         return (
             <Transition
                 appear
@@ -60,16 +68,20 @@ export default class StatusBar extends Component {
                 <section className = { Styles.statusBar }>
                     <div className = { statusStyle }>
                         <div>{statusMessage}</div>
-                        <span />
+                        <span/>
                     </div>
-                    <button>
-                        <img src = { avatar } />
-                        <span>{ currentUserFirstName }</span>
-                        &nbsp;
-                        <span>{ currentUserLastName }</span>    
-                    </button>
+                    { isLoggedIn ? (
+                        <div className = { Styles.menu }>
+                            <Link to = '/profile'>
+                                <img src = { avatar } />
+                                <span>{ currentUserFirstName }</span>   
+                            </Link>
+                            <Link to = '/feed'>Feed</Link>
+                            <button onClick = { this._logoutBtn }>Log out</button>
+                        </div>
+                    ) : null }  
                 </section>
-            </Transition>
+            </Transition> 
         );
     }
 }
